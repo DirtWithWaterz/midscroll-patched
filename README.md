@@ -21,6 +21,8 @@ cd midscroll-patched
 
 chmod +x install.sh uninstall.sh
 ./install.sh
+
+# Install copies this repo’s midscroll.conf to /etc/midscroll.conf (includes a large app blacklist). A backup is saved as /etc/midscroll.conf.bak-midscroll-patched the first time.
 # You may delete the clone after installation.
 ```
 ---

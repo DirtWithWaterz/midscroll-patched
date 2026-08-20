@@ -65,18 +65,32 @@ echo "==> installing patched daemon"
 sudo cp "$DAEMON_SRC" "$DAEMON_DST"
 sudo chmod 755 "$DAEMON_DST"
 
-# ----- config keys -----
-echo "==> ensuring TOGGLE_MODE / GHOST_CURSOR in $CONF"
-ensure_conf_key() {
-  local key="$1" val="$2"
-  if grep -qE "^[[:space:]]*${key}[[:space:]]*=" "$CONF"; then
-    sudo sed -i -E "s|^[[:space:]]*${key}[[:space:]]*=.*|${key} = ${val}|" "$CONF"
-  else
-    echo "${key} = ${val}" | sudo tee -a "$CONF" >/dev/null
+# ----- config -----
+CONF_SRC="$REPO_DIR/midscroll.conf"
+echo "==> installing config from repo (blacklist, toggle, ghost, …)"
+if [[ -f "$CONF_SRC" ]]; then
+  # Backup any existing config once
+  if [[ -f "$CONF" ]] && [[ ! -f /etc/midscroll.conf.bak-midscroll-patched ]]; then
+    sudo cp "$CONF" /etc/midscroll.conf.bak-midscroll-patched
   fi
-}
-ensure_conf_key TOGGLE_MODE true
-ensure_conf_key GHOST_CURSOR true
+  sudo cp "$CONF_SRC" "$CONF"
+  sudo chown root:root "$CONF"
+  sudo chmod 644 "$CONF"
+else
+  echo "    warning: no midscroll.conf in repo; only setting TOGGLE_MODE / GHOST_CURSOR"
+  ensure_conf_key() {
+    local key="$1" val="$2"
+    if grep -qE "^[[:space:]]*${key}[[:space:]]*=" "$CONF"; then
+      sudo sed -i -E "s|^[[:space:]]*${key}[[:space:]]*=.*|${key} = ${val}|" "$CONF"
+    else
+      echo "${key} = ${val}" | sudo tee -a "$CONF" >/dev/null
+    fi
+  }
+  ensure_conf_key TOGGLE_MODE true
+  ensure_conf_key GHOST_CURSOR true
+  sudo chown root:root "$CONF"
+  sudo chmod 644 "$CONF"
+fi
 sudo chown root:root "$CONF"
 sudo chmod 644 "$CONF"
 
