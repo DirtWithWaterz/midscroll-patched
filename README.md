@@ -18,8 +18,10 @@ devices, `/etc/midscroll.conf`, and the systemd units already exist.
 ```bash
 git clone https://github.com/DirtWithWaterz/midscroll-patched.git
 cd midscroll-patched
-chmod +x install.sh
+
+chmod +x install.sh uninstall.sh
 ./install.sh
+# You may delete the clone after installation.
 ```
 ---
 
