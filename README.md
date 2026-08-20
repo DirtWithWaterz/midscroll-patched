@@ -1,5 +1,7 @@
 # midscroll-patched
 
+It's essentially windows auto-scroll now. You're welcome.
+
 Local patch on top of [gnhen/midscroll](https://github.com/gnhen/midscroll):
 Based on gnhen/midscroll (Unlicense); this tree is the same unless noted.
 
