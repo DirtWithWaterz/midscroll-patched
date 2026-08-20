@@ -442,7 +442,6 @@ class Overlay(Gtk.Window):
         if visual is not None:
             self.set_visual(visual)
 
-        # X11 connection used for pointer position and root geometry.
         self.pointer = X11Pointer()
 
         root_geometry = self.pointer.display.screen().root.get_geometry()
@@ -473,7 +472,6 @@ class Overlay(Gtk.Window):
 
         self.offset = (0, 0)
 
-        # True while the midscroll daemon socket is connected.
         self.socket_connected = False
 
         self.icon = None
@@ -498,15 +496,8 @@ class Overlay(Gtk.Window):
 
         window = self.get_window()
 
-        # Don't let the window manager decorate/manage this surface.
         window.set_override_redirect(True)
 
-        # Completely empty input region.
-        #
-        # This is critical.
-        #
-        # The overlay exists visually but cannot receive
-        # mouse clicks.
         window.input_shape_combine_region(
             cairo.Region(),
             0,
@@ -539,7 +530,7 @@ class Overlay(Gtk.Window):
         cr.arc(x, y, radius - 0.5, 0, 6.283185307179586)
         cr.stroke()
 
-        # Always use the outlined white arrows (more visible on dark themes)
+        # Outlined white arrows
         cr.set_source_rgba(1.0, 1.0, 1.0, 0.95)
         cr.set_line_width(2.0)
 
@@ -567,19 +558,19 @@ class Overlay(Gtk.Window):
 
     def draw_target(self, cr, x, y):
         """Small circle at the current offset position."""
-        # Outer ring (white)
+        # Outer ring
         cr.set_source_rgba(1.0, 1.0, 1.0, 0.9)
         cr.set_line_width(1.5)
         cr.arc(x, y, 6.0, 0, 6.283185307179586)
         cr.stroke()
 
-        # Inner fill (semi-transparent)
+        # Inner fill
         cr.set_source_rgba(1.0, 1.0, 1.0, 0.35)
         cr.arc(x, y, 4.0, 0, 6.283185307179586)
         cr.fill()
 
     def draw_line(self, cr, x1, y1, x2, y2):
-        """Thin white line from badge centre to the target circle."""
+        
         cr.set_source_rgba(1.0, 1.0, 1.0, 0.55)
         cr.set_line_width(1.25)
         cr.move_to(x1, y1)
@@ -620,7 +611,6 @@ class Overlay(Gtk.Window):
         self.show_all()
         self.queue_draw()
 
-        # Redraw ~60 fps so the circle tracks the pointer smoothly
         if self._redraw_id is None:
             self._redraw_id = GLib.timeout_add(16, self._tick)
 
@@ -637,7 +627,7 @@ class Overlay(Gtk.Window):
     def _tick(self):
         if self.active:
             self.queue_draw()
-            return True          # keep the timer running
+            return True
         return False
 
     def set_offset(
@@ -902,11 +892,8 @@ def watchdog(overlay):
 
     if overlay.active:
 
-        # Keep the overlay click-through.
         overlay.make_click_through()
 
-        # Only hide the overlay if the daemon socket
-        # has actually disconnected.
         if not overlay.socket_connected:
 
             print(
@@ -925,11 +912,9 @@ def watchdog(overlay):
 def main():
 
     if os.environ.get("XDG_SESSION_TYPE") != "x11":
-
         print(
             "This overlay is specifically for X11."
         )
-
         return 1
 
     overlay = Overlay()
@@ -949,12 +934,9 @@ def main():
     )
 
     try:
-
         Gtk.main()
 
     finally:
-
-        # Always restore the real cursor if the overlay exits.
         overlay.pointer.show_cursor()
 
     return 0
