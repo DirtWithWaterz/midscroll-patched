@@ -76,7 +76,7 @@ mkdir -p ~/.config/systemd/user/midscroll-overlay.service.d
 nano ~/.config/systemd/user/midscroll-overlay.service.d/x11.conf
 ```
 
-Put **exactly** this in the file (no quotes):
+Put **exactly** this in the file:
 
 ```ini
 [Unit]
