@@ -79,9 +79,18 @@ nano ~/.config/systemd/user/midscroll-overlay.service.d/x11.conf
 Put **exactly** this in the file (no quotes):
 
 ```ini
+[Unit]
+Description=midscroll X11 overlay (patched)
+After=default.target
+
 [Service]
-ExecStart=
+Type=simple
 ExecStart=/usr/local/bin/midscroll-overlay-x11
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target
 ```
 
 Save, then:
