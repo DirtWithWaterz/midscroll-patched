@@ -139,8 +139,6 @@ it does not install new versions of *your* patch for you.
 
 ---
 
-## Notes
+## Note
 
-- System daemon = root, package unit `midscroll`.
-- Overlay = your user session, unit `midscroll-overlay`.
-- Replace `/path/to/this/repo` with the real clone path (e.g. `~/midscroll`).
+- Replace `/path/to/this/repo` with the real clone path (e.g. `~/midscroll-patched`).
