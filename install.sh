@@ -97,6 +97,7 @@ EOF
 
 systemctl --user daemon-reload
 systemctl --user enable --now midscroll-overlay
+systemctl --user restart midscroll-overlay
 
 echo
 echo "Done."
