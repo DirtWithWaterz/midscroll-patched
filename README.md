@@ -1,6 +1,9 @@
 # midscroll-patched
 
+This is the manual install instructions, if using the installer you do not need to do any of this.
+
 Local patch on top of [gnhen/midscroll](https://github.com/gnhen/midscroll):
+Based on gnhen/midscroll (Unlicense); this tree is the same unless noted.
 
 - **Toggle mode** keeps the real pointer **anchored** at the middle-click
   point, so scrolling stays on the window you started in (same as hold mode).
@@ -35,6 +38,7 @@ Set at least:
 TOGGLE_MODE = true
 GHOST_CURSOR = true
 ```
+Note that the packaged .conf may differ and only those two keys must be set.
 
 Permissions must stay root-owned and not group/world-writable (otherwise the
 daemon ignores the file):
