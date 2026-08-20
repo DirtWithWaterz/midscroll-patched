@@ -1,7 +1,5 @@
 # midscroll-patched
 
-This is the manual install instructions, if using the installer you do not need to do any of this.
-
 Local patch on top of [gnhen/midscroll](https://github.com/gnhen/midscroll):
 Based on gnhen/midscroll (Unlicense); this tree is the same unless noted.
 
@@ -10,10 +8,22 @@ Based on gnhen/midscroll (Unlicense); this tree is the same unless noted.
 - Still sends `pos` lines so a custom X11 overlay can draw a badge, line, and
   target circle.
 
-Install **upstream midscroll first** (package or upstream `install.sh`) so
+If you want to install this all manually than install **upstream midscroll first** (package or upstream `install.sh`) so
 devices, `/etc/midscroll.conf`, and the systemd units already exist.
 
 ---
+
+# Quick install
+
+```bash
+git clone https://github.com/DirtWithWaterz/midscroll-patched.git
+cd midscroll-patched
+chmod +x install.sh
+./install.sh
+```
+---
+
+# Manual Install
 
 ## 1. Patch the system daemon
 
