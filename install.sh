@@ -97,21 +97,33 @@ sudo chmod 644 "$CONF"
 echo "==> restarting system midscroll"
 sudo systemctl restart midscroll
 
-# ----- overlay -----
 echo "==> installing X11 overlay"
 sudo install -m 755 "$OVERLAY_SRC" "$OVERLAY_DST"
 
-echo "==> user unit drop-in"
-mkdir -p "$DROPIN_DIR"
-cat > "$DROPIN" <<'EOF'
+echo "==> user service (full unit, not only a drop-in)"
+UNIT_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"
+mkdir -p "$UNIT_DIR"
+# remove old drop-in if present
+rm -rf "$UNIT_DIR/midscroll-overlay.service.d"
+
+cat > "$UNIT_DIR/midscroll-overlay.service" <<'EOF'
+[Unit]
+Description=midscroll X11 overlay (patched)
+After=default.target
+
 [Service]
-ExecStart=
+Type=simple
 ExecStart=/usr/local/bin/midscroll-overlay-x11
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target
 EOF
 
 systemctl --user daemon-reload
-systemctl --user enable --now midscroll-overlay
-systemctl --user restart midscroll-overlay
+systemctl --user enable --now midscroll-overlay.service
+systemctl --user restart midscroll-overlay.service
 
 echo
 echo "Done."

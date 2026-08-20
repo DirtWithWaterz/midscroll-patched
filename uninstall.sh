@@ -6,8 +6,9 @@ die() { echo "error: $*" >&2; exit 1; }
 
 [[ "$(id -u)" -ne 0 ]] || die "do not run as root; the script will sudo when needed"
 
-DROPIN_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/midscroll-overlay.service.d"
-DROPIN="$DROPIN_DIR/x11.conf"
+UNIT_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"
+UNIT="$UNIT_DIR/midscroll-overlay.service"
+DROPIN_DIR="$UNIT_DIR/midscroll-overlay.service.d"
 OVERLAY_DST="/usr/local/bin/midscroll-overlay-x11"
 DAEMON_DST="/usr/bin/midscroll"
 
@@ -31,17 +32,17 @@ case "${1:-}" in
     ;;
 esac
 
-echo "==> stopping custom overlay"
-systemctl --user disable --now midscroll-overlay 2>/dev/null || true
-rm -f "$DROPIN"
-rmdir "$DROPIN_DIR" 2>/dev/null || true
+# ----- always remove the custom overlay (unit + binary) -----
+echo "==> stopping and removing custom overlay"
+systemctl --user disable --now midscroll-overlay.service 2>/dev/null || true
+rm -f "$UNIT"
+rm -rf "$DROPIN_DIR"
 systemctl --user daemon-reload 2>/dev/null || true
 sudo rm -f "$OVERLAY_DST"
 
 if [[ "$REMOVE_ALL" -eq 1 ]]; then
   echo "==> removing midscroll completely"
 
-  # Undo divert so package removal can work
   if dpkg-divert --list "$DAEMON_DST" 2>/dev/null | grep -q .; then
     sudo rm -f "$DAEMON_DST"
     sudo dpkg-divert --rename --remove "$DAEMON_DST" || true
@@ -50,19 +51,13 @@ if [[ "$REMOVE_ALL" -eq 1 ]]; then
   sudo systemctl stop midscroll 2>/dev/null || true
   sudo systemctl disable midscroll 2>/dev/null || true
 
-  # If it was installed as a .deb package
   if command -v apt-get >/dev/null && dpkg -l midscroll 2>/dev/null | grep -q '^ii'; then
     sudo apt-get remove -y --purge midscroll || true
   fi
 
-  # Files commonly left by midscroll's own install.sh
   sudo rm -f /usr/bin/midscroll /usr/bin/midscroll.dist
   sudo rm -f /etc/midscroll.conf
   sudo rm -rf /run/midscroll
-  # Optional: only if you know this tree is only midscroll
-  # sudo rm -rf /usr/share/midscroll
-
-  systemctl --user disable --now midscroll-overlay 2>/dev/null || true
 
   echo "Done. midscroll should be fully removed."
 else
