@@ -76,12 +76,21 @@ mkdir -p ~/.config/systemd/user/midscroll-overlay.service.d
 nano ~/.config/systemd/user/midscroll-overlay.service.d/x11.conf
 ```
 
-Put **exactly** this in the file (no quotes):
+Put **exactly** this in the file:
 
 ```ini
+[Unit]
+Description=midscroll X11 overlay (patched)
+After=default.target
+
 [Service]
-ExecStart=
+Type=simple
 ExecStart=/usr/local/bin/midscroll-overlay-x11
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target
 ```
 
 Save, then:
@@ -130,8 +139,6 @@ it does not install new versions of *your* patch for you.
 
 ---
 
-## Notes
+## Note
 
-- System daemon = root, package unit `midscroll`.
-- Overlay = your user session, unit `midscroll-overlay`.
-- Replace `/path/to/this/repo` with the real clone path (e.g. `~/midscroll`).
+- Replace `/path/to/this/repo` with the real clone path (e.g. `~/midscroll-patched`).
